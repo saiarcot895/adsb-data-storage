@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QSharedDataPointer>
+#include <QExplicitlySharedDataPointer>
 #include <QList>
 #include "position.h"
 
@@ -22,7 +22,7 @@ public:
 
     void addPosition(const Position position);
 private:
-    QSharedDataPointer<AircraftData> data;
+    QExplicitlySharedDataPointer<AircraftData> data;
 };
 
 #endif // AIRCRAFT_H

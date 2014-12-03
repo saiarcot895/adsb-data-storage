@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QSharedDataPointer>
+#include <QExplicitlySharedDataPointer>
 #include <QDateTime>
 #include <QtPositioning/QGeoCoordinate>
 
@@ -38,7 +38,7 @@ public:
     void setSquawk(quint16 squawk);
 
 private:
-    QSharedDataPointer<PositionData> data;
+    QExplicitlySharedDataPointer<PositionData> data;
 };
 
 #endif // POSITION_H
