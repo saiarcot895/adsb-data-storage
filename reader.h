@@ -1,8 +1,11 @@
 #ifndef READER_H
 #define READER_H
 
+#include "aircraft.h"
+
 #include <QObject>
 #include <QTcpSocket>
+#include <QMap>
 
 class Reader : public QObject
 {
@@ -14,6 +17,7 @@ private slots:
     void readData();
 private:
     QTcpSocket* socket;
+    QMap<quint32, Aircraft> aircrafts;
 
 };
 

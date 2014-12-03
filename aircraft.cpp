@@ -7,8 +7,9 @@ public:
     QList<Position> positions;
 };
 
-Aircraft::Aircraft() : data(new AircraftData)
+Aircraft::Aircraft(quint32 hexCode) : data(new AircraftData)
 {
+    data->hexCode = hexCode;
 }
 
 Aircraft::Aircraft(const Aircraft &rhs) : data(rhs.data)

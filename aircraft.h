@@ -12,7 +12,7 @@ class AircraftData;
 class Aircraft : public QObject
 {
 public:
-    Aircraft();
+    Aircraft(quint32 hexCode = 0);
     Aircraft(const Aircraft &);
     Aircraft &operator=(const Aircraft &);
     ~Aircraft();
