@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QMap>
+#include <QTimer>
 
 class Reader : public QObject
 {
@@ -15,9 +16,13 @@ public:
 
 private slots:
     void readData();
+    void saveData();
 private:
     QTcpSocket* socket;
     QMap<quint32, Aircraft> aircrafts;
+    QTimer* timer;
+
+    void loadData();
 
 };
 

@@ -37,6 +37,8 @@ public:
     void setTrack(quint16 track);
     void setSquawk(quint16 squawk);
 
+    friend QDataStream& operator<<(QDataStream& stream, const Position& position);
+    friend QDataStream& operator>>(QDataStream& stream, Position& position);
 private:
     QExplicitlySharedDataPointer<PositionData> data;
 };

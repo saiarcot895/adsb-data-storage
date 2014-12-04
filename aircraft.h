@@ -21,6 +21,9 @@ public:
     QList<Position> getPositionData() const;
 
     void addPosition(const Position position);
+
+    friend QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft);
+    friend QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft);
 private:
     QExplicitlySharedDataPointer<AircraftData> data;
 };

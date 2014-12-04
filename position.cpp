@@ -1,24 +1,30 @@
 #include "position.h"
 #include <QSharedData>
+#include <QDataStream>
 
 class PositionData : public QSharedData {
 public:
     QDateTime reportingTime;
-    bool coordinatesSet = false;
+    bool coordinatesSet;
     qreal latitude;
     qreal longitude;
-    bool altitudeSet = false;
+    bool altitudeSet;
     qint32 altitude;
-    bool speedSet = false;
+    bool speedSet;
     quint16 speed;
-    bool trackSet = false;
+    bool trackSet;
     quint16 track;
-    bool squawkSet = false;
+    bool squawkSet;
     quint16 squawk;
 };
 
 Position::Position() : data(new PositionData)
 {
+    data->coordinatesSet = false;
+    data->altitudeSet = false;
+    data->speedSet = false;
+    data->trackSet = false;
+    data->squawkSet = false;
 }
 
 Position::Position(const Position &rhs) : data(rhs.data)
@@ -108,6 +114,62 @@ Position &Position::operator=(const Position &rhs)
     if (this != &rhs)
         data.operator=(rhs.data);
     return *this;
+}
+
+QDataStream& operator<<(QDataStream& stream, const Position& position) {
+    stream << position.data->reportingTime;
+    stream << position.data->coordinatesSet;
+    if (position.data->coordinatesSet) {
+        stream << position.data->latitude;
+        stream << position.data->longitude;
+    }
+    stream << position.data->altitudeSet;
+    if (position.data->altitudeSet) {
+        stream << position.data->altitude;
+    }
+    stream << position.data->speedSet;
+    if (position.data->speedSet) {
+        stream << position.data->speed;
+    }
+    stream << position.data->trackSet;
+    if (position.data->trackSet) {
+        stream << position.data->track;
+    }
+    stream << position.data->squawkSet;
+    if (position.data->squawkSet) {
+        stream << position.data->squawk;
+    }
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Position& position) {
+    position = Position();
+
+    stream >> position.data->reportingTime;
+    stream >> position.data->coordinatesSet;
+    if (position.data->coordinatesSet) {
+        stream >> position.data->latitude;
+        stream >> position.data->longitude;
+    }
+    stream >> position.data->altitudeSet;
+    if (position.data->altitudeSet) {
+        stream >> position.data->altitude;
+    }
+    stream >> position.data->speedSet;
+    if (position.data->speedSet) {
+        stream >> position.data->speed;
+    }
+    stream >> position.data->trackSet;
+    if (position.data->trackSet) {
+        stream >> position.data->track;
+    }
+    stream >> position.data->squawkSet;
+    if (position.data->squawkSet) {
+        stream >> position.data->squawk;
+    }
+
+    return stream;
 }
 
 Position::~Position()

@@ -1,5 +1,6 @@
 #include "aircraft.h"
 #include <QSharedData>
+#include <QDataStream>
 
 class AircraftData : public QSharedData {
 public:
@@ -33,6 +34,22 @@ Aircraft &Aircraft::operator=(const Aircraft &rhs)
     if (this != &rhs)
         data.operator=(rhs.data);
     return *this;
+}
+
+QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft) {
+    stream << aircraft.data->hexCode;
+    stream << aircraft.data->positions;
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft) {
+    aircraft = Aircraft();
+
+    stream >> aircraft.data->hexCode;
+    stream >> aircraft.data->positions;
+
+    return stream;
 }
 
 Aircraft::~Aircraft()
