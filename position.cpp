@@ -5,26 +5,19 @@
 class PositionData : public QSharedData {
 public:
     QDateTime reportingTime;
-    bool coordinatesSet;
-    qreal latitude;
-    qreal longitude;
-    bool altitudeSet;
-    qint32 altitude;
-    bool speedSet;
-    quint16 speed;
-    bool trackSet;
-    quint16 track;
-    bool squawkSet;
-    quint16 squawk;
+    Position::MessageType messageType = Position::Unknown;
+    qreal latitude = 0;
+    qreal longitude = 0;
+    qint32 altitude = 0;
+    qint32 verticalRate = 0;
+    quint16 speed = 0;
+    quint16 track = 0;
+    quint16 squawk = 0;
+    QString callsign;
 };
 
 Position::Position() : data(new PositionData)
 {
-    data->coordinatesSet = false;
-    data->altitudeSet = false;
-    data->speedSet = false;
-    data->trackSet = false;
-    data->squawkSet = false;
 }
 
 Position::Position(const Position &rhs) : data(rhs.data)
@@ -35,78 +28,77 @@ QDateTime Position::getReportingTime() const {
     return data->reportingTime;
 }
 
-bool Position::areCoordinatesSet() const {
-    return data->coordinatesSet;
+Position::MessageType Position::getMessageType() const {
+    return data->messageType;
 }
 
 qreal Position::getLatitude() const {
-    return data->coordinatesSet ? data->latitude : 0;
+    return data->latitude;
 }
 
 qreal Position::getLongitude() const {
-    return data->coordinatesSet ? data->longitude : 0;
-}
-
-bool Position::isAltitudeSet() const {
-    return data->altitudeSet;
+    return data->longitude;
 }
 
 qint32 Position::getAltitude() const {
     return data->altitude;
 }
 
-bool Position::isSpeedSet() const {
-    return data->speedSet;
+qint32 Position::getVerticalRate() const {
+    return data->verticalRate;
 }
 
 quint16 Position::getSpeed() const {
     return data->speed;
 }
 
-bool Position::isTrackSet() const {
-    return data->trackSet;
-}
-
 quint16 Position::getTrack() const {
     return data->track;
-}
-
-bool Position::isSquawkSet() const {
-    return data->squawkSet;
 }
 
 quint16 Position::getSquawk() const {
     return data->squawk;
 }
 
+QString Position::getCallsign() const {
+    return data->callsign;
+}
+
 void Position::setReportingTime(QDateTime reportingTime) {
     data->reportingTime = reportingTime;
+}
+
+void Position::setMessageType(Position::MessageType messageType) {
+    data->messageType = messageType;
 }
 
 void Position::setCoordinates(qreal latitude, qreal longitude) {
     data->latitude = latitude;
     data->longitude = longitude;
-    data->coordinatesSet = true;
 }
 
 void Position::setAltitude(qint32 altitude) {
     data->altitude = altitude;
-    data->altitudeSet = true;
+}
+
+void Position::setVerticalRate(qint32 verticalRate) {
+    data->verticalRate = verticalRate;
 }
 
 void Position::setSpeed(quint16 speed) {
     data->speed = speed;
-    data->speedSet = true;
 }
 
 void Position::setTrack(quint16 track) {
     data->track = track;
-    data->trackSet = true;
 }
 
 void Position::setSquawk(quint16 squawk) {
     data->squawk = squawk;
-    data->squawkSet = true;
+}
+
+void Position::setCallsign(QString callsign) {
+    data->callsign = callsign;
 }
 
 Position &Position::operator=(const Position &rhs)
@@ -118,26 +110,29 @@ Position &Position::operator=(const Position &rhs)
 
 QDataStream& operator<<(QDataStream& stream, const Position& position) {
     stream << position.data->reportingTime;
-    stream << position.data->coordinatesSet;
-    if (position.data->coordinatesSet) {
+    stream << position.data->messageType;
+    if (position.data->messageType == Position::ESIdentificationAndCategory) {
+        stream << position.data->callsign;
+    } else if (position.data->messageType == Position::ESSurfacePositionMessage) {
+        stream << position.data->altitude;
+        stream << position.data->speed;
+        stream << position.data->track;
         stream << position.data->latitude;
         stream << position.data->longitude;
-    }
-    stream << position.data->altitudeSet;
-    if (position.data->altitudeSet) {
+    } else if (position.data->messageType == Position::ESAirbornePositionMessage) {
         stream << position.data->altitude;
-    }
-    stream << position.data->speedSet;
-    if (position.data->speedSet) {
+        stream << position.data->latitude;
+        stream << position.data->longitude;
+    } else if (position.data->messageType == Position::ESAirborneVelocityMessage) {
         stream << position.data->speed;
-    }
-    stream << position.data->trackSet;
-    if (position.data->trackSet) {
         stream << position.data->track;
-    }
-    stream << position.data->squawkSet;
-    if (position.data->squawkSet) {
+        stream << position.data->verticalRate;
+    } else if (position.data->messageType == Position::SurveillanceAltMessage || position.data->messageType == Position::AirToAirMessage) {
+        stream << position.data->altitude;
+    } else if (position.data->messageType == Position::SurveillanceIDMessage) {
+        stream << position.data->altitude;
         stream << position.data->squawk;
+    } else if (position.data->messageType == Position::AllCallReply) {
     }
 
     return stream;
@@ -147,27 +142,46 @@ QDataStream& operator>>(QDataStream& stream, Position& position) {
     position = Position();
 
     stream >> position.data->reportingTime;
-    stream >> position.data->coordinatesSet;
-    if (position.data->coordinatesSet) {
+    stream >> position.data->messageType;
+    if (position.data->messageType == Position::ESIdentificationAndCategory) {
+        stream >> position.data->callsign;
+    } else if (position.data->messageType == Position::ESSurfacePositionMessage) {
+        stream >> position.data->altitude;
+        stream >> position.data->speed;
+        stream >> position.data->track;
         stream >> position.data->latitude;
         stream >> position.data->longitude;
-    }
-    stream >> position.data->altitudeSet;
-    if (position.data->altitudeSet) {
+    } else if (position.data->messageType == Position::ESAirbornePositionMessage) {
         stream >> position.data->altitude;
-    }
-    stream >> position.data->speedSet;
-    if (position.data->speedSet) {
+        stream >> position.data->latitude;
+        stream >> position.data->longitude;
+    } else if (position.data->messageType == Position::ESAirborneVelocityMessage) {
         stream >> position.data->speed;
-    }
-    stream >> position.data->trackSet;
-    if (position.data->trackSet) {
         stream >> position.data->track;
-    }
-    stream >> position.data->squawkSet;
-    if (position.data->squawkSet) {
+        stream >> position.data->verticalRate;
+    } else if (position.data->messageType == Position::SurveillanceAltMessage || position.data->messageType == Position::AirToAirMessage) {
+        stream >> position.data->altitude;
+    } else if (position.data->messageType == Position::SurveillanceIDMessage) {
+        stream >> position.data->altitude;
         stream >> position.data->squawk;
+    } else if (position.data->messageType == Position::AllCallReply) {
     }
+
+    return stream;
+}
+
+QDataStream& operator<<(QDataStream& stream, const Position::MessageType& messageType) {
+    stream << (quint8) messageType;
+
+    return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, Position::MessageType& messageType) {
+    quint8 messageTypeInt;
+
+    stream >> messageTypeInt;
+
+    messageType = static_cast<Position::MessageType>(messageTypeInt);
 
     return stream;
 }
