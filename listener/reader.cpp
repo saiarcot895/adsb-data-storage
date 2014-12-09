@@ -10,10 +10,10 @@ Reader::Reader(QObject *parent) :
 {
     loadData();
 
-    connect(timer, SIGNAL(timeout()), this, SLOT(saveData()));
+    QObject::connect(timer, &QTimer::timeout, this, &Reader::saveData);
     timer->start(60000);
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
+    QObject::connect(socket, &QTcpSocket::readyRead, this, &Reader::readData);
     socket->connectToHost("127.0.0.1", 30003, QIODevice::ReadOnly);
 }
 
