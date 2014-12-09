@@ -34,6 +34,4 @@ void MainWindow::loadData() {
 void MainWindow::displayAircraftHistory(int index) {
     Aircraft aircraft = aircrafts.values().at(index);
     positionModel->setPositions(aircraft.getPositionData());
-    engine->rootContext()->setContextProperty("positionModel", NULL);
-    engine->rootContext()->setContextProperty("positionModel", positionModel);
 }

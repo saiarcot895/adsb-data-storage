@@ -7,7 +7,9 @@ PositionModel::PositionModel(QList<Position> positions, QObject *parent) :
 }
 
 void PositionModel::setPositions(QList<Position> positions) {
+    emit layoutAboutToBeChanged();
     this->positions = positions;
+    emit layoutChanged();
 }
 
 QHash<int, QByteArray> PositionModel::roleNames() const {
