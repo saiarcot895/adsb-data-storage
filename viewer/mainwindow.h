@@ -6,6 +6,7 @@
 #include <QMap>
 #include "aircraft.h"
 #include "aircraftmodel.h"
+#include "positionmodel.h"
 
 class MainWindow : public QObject
 {
@@ -13,11 +14,14 @@ class MainWindow : public QObject
 public:
     explicit MainWindow(QObject *parent = 0);
 
+    Q_INVOKABLE void displayAircraftHistory(int index);
+
 private:
     QQmlApplicationEngine* engine;
     QObject* rootObject;
     QMap<quint32, Aircraft> aircrafts;
     AircraftModel* aircraftModel;
+    PositionModel* positionModel;
 
     void loadData();
 

@@ -4,7 +4,8 @@ QT += qml quick widgets
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    aircraftmodel.cpp
+    aircraftmodel.cpp \
+    positionmodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,7 +17,8 @@ include(deployment.pri)
 
 HEADERS += \
     mainwindow.h \
-    aircraftmodel.h
+    aircraftmodel.h \
+    positionmodel.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -ladsbData-core
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -ladsbData-core

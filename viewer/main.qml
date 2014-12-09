@@ -18,13 +18,18 @@ ApplicationWindow {
     }
 
     TableView {
+        id: aircraftTable
         anchors.top: parent.top
         anchors.topMargin: 8
         anchors.left: parent.left
         anchors.leftMargin: 8
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 8
+        sortIndicatorVisible: true
         model: aircraftModel
+
+        onSortIndicatorColumnChanged: model.sort(sortIndicatorColumn, sortIndicatorOrder)
+        onSortIndicatorOrderChanged: model.sort(sortIndicatorColumn, sortIndicatorOrder)
 
         TableViewColumn {
             role: "hexCode";
@@ -49,6 +54,27 @@ ApplicationWindow {
             delegate: Label {
                 text: styleData.value
             }
+        }
+
+        onClicked: {
+            mainWindow.displayAircraftHistory(row);
+        }
+    }
+
+    TableView {
+        id: positionTable
+        anchors.top: parent.top
+        anchors.topMargin: 8
+        anchors.left: aircraftTable.right
+        anchors.leftMargin: 6
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+        model: positionModel
+
+        TableViewColumn {
+            role: "reportingTime";
+            title: "Time";
+            width: 70
         }
     }
 }
