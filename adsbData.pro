@@ -4,23 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core network
+TEMPLATE = subdirs
+CONFIG += ordered
 
-QT       -= gui
-
-TARGET = adsbData
-CONFIG   += console c++11
-CONFIG   -= app_bundle
-
-TEMPLATE = app
-
-
-SOURCES += main.cpp \
-    reader.cpp \
-    aircraft.cpp \
-    position.cpp
-
-HEADERS += \
-    reader.h \
-    aircraft.h \
-    position.h
+SUBDIRS = core \
+    listener

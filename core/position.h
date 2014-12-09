@@ -1,6 +1,8 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+#include "core_global.h"
+
 #include <QObject>
 
 #include <QExplicitlySharedDataPointer>
@@ -9,7 +11,7 @@
 
 class PositionData;
 
-class Position : public QObject
+class CORESHARED_EXPORT Position : public QObject
 {
 public:
     Position();
@@ -50,8 +52,8 @@ public:
     void setSquawk(quint16 squawk);
     void setCallsign(QString callsign);
 
-    friend QDataStream& operator<<(QDataStream& stream, const Position& position);
-    friend QDataStream& operator>>(QDataStream& stream, Position& position);
+    friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Position& position);
+    friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Position& position);
 private:
     QExplicitlySharedDataPointer<PositionData> data;
 };
