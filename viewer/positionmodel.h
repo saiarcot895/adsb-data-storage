@@ -29,6 +29,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE QVariant data(int row, QString role) const;
 private:
     QList<Position> positions;
 
