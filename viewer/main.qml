@@ -56,8 +56,8 @@ ApplicationWindow {
             }
         }
 
-        onClicked: {
-            mainWindow.displayAircraftHistory(row);
+        onCurrentRowChanged: {
+            mainWindow.displayAircraftHistory(currentRow);
         }
     }
 
@@ -77,12 +77,12 @@ ApplicationWindow {
             width: positionTable.viewport.width
         }
 
-        onClicked: {
-            infoDisplay.reportingTime = model.data(row, "reportingTime");
-            infoDisplay.messageType = model.data(row, "messageType");
-            infoDisplay.latitude = model.data(row, "latitude");
-            infoDisplay.longitude = model.data(row, "longitude");
-            infoDisplay.altitude = model.data(row, "altitude");
+        onCurrentRowChanged: {
+            infoDisplay.reportingTime = model.data(currentRow, "reportingTime");
+            infoDisplay.messageType = model.data(currentRow, "messageType");
+            infoDisplay.latitude = model.data(currentRow, "latitude");
+            infoDisplay.longitude = model.data(currentRow, "longitude");
+            infoDisplay.altitude = model.data(currentRow, "altitude");
         }
     }
 
