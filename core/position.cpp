@@ -5,7 +5,7 @@
 class PositionData : public QSharedData {
 public:
     QDateTime reportingTime;
-    Position::MessageType messageType = Position::Unknown;
+    QSet<Position::MessageType> messageTypes;
     qreal latitude = 0;
     qreal longitude = 0;
     qint32 altitude = 0;
@@ -28,8 +28,8 @@ QDateTime Position::getReportingTime() const {
     return data->reportingTime;
 }
 
-Position::MessageType Position::getMessageType() const {
-    return data->messageType;
+QSet<Position::MessageType> Position::getMessageTypes() const {
+    return data->messageTypes;
 }
 
 qreal Position::getLatitude() const {
@@ -68,8 +68,8 @@ void Position::setReportingTime(QDateTime reportingTime) {
     data->reportingTime = reportingTime;
 }
 
-void Position::setMessageType(Position::MessageType messageType) {
-    data->messageType = messageType;
+void Position::addMessageType(MessageType messageType) {
+    data->messageTypes.insert(messageType);
 }
 
 void Position::setCoordinates(qreal latitude, qreal longitude) {
@@ -110,29 +110,33 @@ Position &Position::operator=(const Position &rhs)
 
 QDataStream& operator<<(QDataStream& stream, const Position& position) {
     stream << position.data->reportingTime;
-    stream << position.data->messageType;
-    if (position.data->messageType == Position::ESIdentificationAndCategory) {
+    stream << position.data->messageTypes;
+
+    if (position.data->messageTypes.contains(Position::ESIdentificationAndCategory)) {
         stream << position.data->callsign;
-    } else if (position.data->messageType == Position::ESSurfacePositionMessage) {
+    }
+    if (position.data->messageTypes.contains(Position::SurveillanceAltMessage)
+            || position.data->messageTypes.contains(Position::AirToAirMessage)
+            || position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirbornePositionMessage)
+            || position.data->messageTypes.contains(Position::SurveillanceIDMessage)) {
         stream << position.data->altitude;
+    }
+    if (position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirborneVelocityMessage)) {
         stream << position.data->speed;
         stream << position.data->track;
+    }
+    if (position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirbornePositionMessage)) {
         stream << position.data->latitude;
         stream << position.data->longitude;
-    } else if (position.data->messageType == Position::ESAirbornePositionMessage) {
-        stream << position.data->altitude;
-        stream << position.data->latitude;
-        stream << position.data->longitude;
-    } else if (position.data->messageType == Position::ESAirborneVelocityMessage) {
-        stream << position.data->speed;
-        stream << position.data->track;
+    }
+    if (position.data->messageTypes.contains(Position::ESAirborneVelocityMessage)) {
         stream << position.data->verticalRate;
-    } else if (position.data->messageType == Position::SurveillanceAltMessage || position.data->messageType == Position::AirToAirMessage) {
-        stream << position.data->altitude;
-    } else if (position.data->messageType == Position::SurveillanceIDMessage) {
-        stream << position.data->altitude;
+    }
+    if (position.data->messageTypes.contains(Position::SurveillanceIDMessage)) {
         stream << position.data->squawk;
-    } else if (position.data->messageType == Position::AllCallReply) {
     }
 
     return stream;
@@ -142,29 +146,33 @@ QDataStream& operator>>(QDataStream& stream, Position& position) {
     position = Position();
 
     stream >> position.data->reportingTime;
-    stream >> position.data->messageType;
-    if (position.data->messageType == Position::ESIdentificationAndCategory) {
+    stream >> position.data->messageTypes;
+
+    if (position.data->messageTypes.contains(Position::ESIdentificationAndCategory)) {
         stream >> position.data->callsign;
-    } else if (position.data->messageType == Position::ESSurfacePositionMessage) {
+    }
+    if (position.data->messageTypes.contains(Position::SurveillanceAltMessage)
+            || position.data->messageTypes.contains(Position::AirToAirMessage)
+            || position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirbornePositionMessage)
+            || position.data->messageTypes.contains(Position::SurveillanceIDMessage)) {
         stream >> position.data->altitude;
+    }
+    if (position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirborneVelocityMessage)) {
         stream >> position.data->speed;
         stream >> position.data->track;
+    }
+    if (position.data->messageTypes.contains(Position::ESSurfacePositionMessage)
+            || position.data->messageTypes.contains(Position::ESAirbornePositionMessage)) {
         stream >> position.data->latitude;
         stream >> position.data->longitude;
-    } else if (position.data->messageType == Position::ESAirbornePositionMessage) {
-        stream >> position.data->altitude;
-        stream >> position.data->latitude;
-        stream >> position.data->longitude;
-    } else if (position.data->messageType == Position::ESAirborneVelocityMessage) {
-        stream >> position.data->speed;
-        stream >> position.data->track;
+    }
+    if (position.data->messageTypes.contains(Position::ESAirborneVelocityMessage)) {
         stream >> position.data->verticalRate;
-    } else if (position.data->messageType == Position::SurveillanceAltMessage || position.data->messageType == Position::AirToAirMessage) {
-        stream >> position.data->altitude;
-    } else if (position.data->messageType == Position::SurveillanceIDMessage) {
-        stream >> position.data->altitude;
+    }
+    if (position.data->messageTypes.contains(Position::SurveillanceIDMessage)) {
         stream >> position.data->squawk;
-    } else if (position.data->messageType == Position::AllCallReply) {
     }
 
     return stream;

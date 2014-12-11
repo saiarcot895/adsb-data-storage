@@ -31,18 +31,24 @@ void Reader::readData() {
     while (socket->canReadLine()) {
         QString message = socket->readLine();
         const QStringList values = message.split(QChar(','));
+
         Position::MessageType messageType = static_cast<Position::MessageType>(values.at(1).toInt());
         quint32 hexCode = values.at(4).toInt(NULL, 16);
         if (!hexCode) {
             continue;
         }
-        QDateTime reportingTime = QDateTime::fromString(values.at(6) + " " + values.at(7),
-                                                        QStringLiteral("yyyy/MM/dd HH:mm:ss.zzz"));
+
+        QString date = values.at(6);
+        QString time = values.at(7);
+        time = time.remove(8, 4);
+        QDateTime reportingTime = QDateTime::fromString(date + " " + time,
+                                                        QStringLiteral("yyyy/MM/dd HH:mm:ss"));
+        reportingTime.toTimeSpec(Qt::LocalTime);
 
         Aircraft aircraft = aircrafts.value(hexCode, Aircraft(hexCode));
-        Position position;
+        Position position = aircraft.getPositionData(reportingTime);
         position.setReportingTime(reportingTime);
-        position.setMessageType(messageType);
+        position.addMessageType(messageType);
 
         if (messageType == Position::ESIdentificationAndCategory) {
             position.setCallsign(values.at(10));

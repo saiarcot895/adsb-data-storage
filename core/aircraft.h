@@ -21,6 +21,7 @@ public:
 
     quint32 getHexCode() const;
     QList<Position> getPositionData() const;
+    Position getPositionData(const QDateTime time) const;
 
     void addPosition(const Position position);
 

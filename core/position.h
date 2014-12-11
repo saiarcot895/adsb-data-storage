@@ -7,7 +7,7 @@
 
 #include <QExplicitlySharedDataPointer>
 #include <QDateTime>
-#include <QtPositioning/QGeoCoordinate>
+#include <QSet>
 
 class PositionData;
 
@@ -32,7 +32,7 @@ public:
     };
 
     QDateTime getReportingTime() const;
-    MessageType getMessageType() const;
+    QSet<MessageType> getMessageTypes() const;
     qreal getLatitude() const;
     qreal getLongitude() const;
     qint32 getAltitude() const;
@@ -43,7 +43,7 @@ public:
     QString getCallsign() const;
 
     void setReportingTime(QDateTime reportingTime);
-    void setMessageType(MessageType mssageType);
+    void addMessageType(MessageType messageType);
     void setCoordinates(qreal latitude, qreal longitude);
     void setAltitude(qint32 altitude);
     void setVerticalRate(qint32 verticalRate);

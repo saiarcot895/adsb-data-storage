@@ -101,7 +101,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             property date reportingTime
-            property int messageType
+            property string messageType
             property double latitude
             property double longitude
             property int altitude

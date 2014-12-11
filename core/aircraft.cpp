@@ -1,11 +1,12 @@
 #include "aircraft.h"
 #include <QSharedData>
 #include <QDataStream>
+#include <QMap>
 
 class AircraftData : public QSharedData {
 public:
     quint32 hexCode;
-    QList<Position> positions;
+    QMap<QDateTime, Position> positions;
 };
 
 Aircraft::Aircraft(quint32 hexCode) : data(new AircraftData)
@@ -22,11 +23,15 @@ quint32 Aircraft::getHexCode() const {
 }
 
 QList<Position> Aircraft::getPositionData() const {
-    return data->positions;
+    return data->positions.values();
+}
+
+Position Aircraft::getPositionData(const QDateTime time) const {
+    return data->positions.value(time);
 }
 
 void Aircraft::addPosition(const Position position) {
-    data->positions.append(position);
+    data->positions.insert(position.getReportingTime(), position);
 }
 
 Aircraft &Aircraft::operator=(const Aircraft &rhs)
@@ -38,7 +43,7 @@ Aircraft &Aircraft::operator=(const Aircraft &rhs)
 
 QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft) {
     stream << aircraft.data->hexCode;
-    stream << aircraft.data->positions;
+    stream << aircraft.data->positions.values();
 
     return stream;
 }
@@ -47,7 +52,14 @@ QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft) {
     aircraft = Aircraft();
 
     stream >> aircraft.data->hexCode;
-    stream >> aircraft.data->positions;
+
+    QList<Position> positions;
+    stream >> positions;
+
+    for (int i = 0; i < positions.size(); i++) {
+        const Position position = positions.at(i);
+        aircraft.data->positions.insert(position.getReportingTime(), position);
+    }
 
     return stream;
 }

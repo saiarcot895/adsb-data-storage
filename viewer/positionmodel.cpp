@@ -35,7 +35,15 @@ QVariant PositionModel::data(const QModelIndex &index, int role) const {
     if (role == PositionModel::ReportingTime) {
         return position.getReportingTime();
     } else if (role == PositionModel::MessageType) {
-        return position.getMessageType();
+        QList<Position::MessageType> messageTypes = position.getMessageTypes().toList();
+        QString messageTypeString;
+        for (int i = 0; i < messageTypes.size(); i++) {
+            messageTypeString += QString::number(messageTypes.at(i));
+            if (i != messageTypes.size() - 1) {
+                messageTypeString += ", ";
+            }
+        }
+        return messageTypeString;
     } else if (role == PositionModel::Latitude) {
         return position.getLatitude();
     } else if (role == PositionModel::Longitude) {
