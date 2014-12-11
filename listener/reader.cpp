@@ -32,7 +32,7 @@ void Reader::readData() {
         QString message = socket->readLine();
         const QStringList values = message.split(QChar(','));
 
-        Position::MessageType messageType = static_cast<Position::MessageType>(values.at(1).toInt());
+        Report::MessageType messageType = static_cast<Report::MessageType>(values.at(1).toInt());
         quint32 hexCode = values.at(4).toInt(NULL, 16);
         if (!hexCode) {
             continue;
@@ -46,31 +46,31 @@ void Reader::readData() {
         reportingTime.toTimeSpec(Qt::LocalTime);
 
         Aircraft aircraft = aircrafts.value(hexCode, Aircraft(hexCode));
-        Position position = aircraft.getPositionData(reportingTime);
-        position.setReportingTime(reportingTime);
-        position.addMessageType(messageType);
+        Report report = aircraft.getReports(reportingTime);
+        report.setReportingTime(reportingTime);
+        report.addMessageType(messageType);
 
-        if (messageType == Position::ESIdentificationAndCategory) {
-            position.setCallsign(values.at(10));
-        } else if (messageType == Position::ESSurfacePositionMessage) {
-            position.setAltitude(values.at(11).toInt());
-            position.setSpeed(values.at(12).toUShort());
-            position.setTrack(values.at(13).toUShort());
-            position.setCoordinates(values.at(14).toDouble(), values.at(15).toDouble());
-        } else if (messageType == Position::ESAirbornePositionMessage) {
-            position.setAltitude(values.at(11).toInt());
-            position.setCoordinates(values.at(14).toDouble(), values.at(15).toDouble());
-        } else if (messageType == Position::ESAirborneVelocityMessage) {
-            position.setSpeed(values.at(12).toUShort());
-            position.setTrack(values.at(13).toUShort());
-            position.setVerticalRate(values.at(16).toInt());
-        } else if (messageType == Position::SurveillanceAltMessage || messageType == Position::AirToAirMessage) {
-            position.setAltitude(values.at(11).toInt());
-        } else if (messageType == Position::SurveillanceIDMessage) {
-            position.setAltitude(values.at(11).toInt());
-            position.setSquawk(values.at(17).toUInt());
+        if (messageType == Report::ESIdentificationAndCategory) {
+            report.setCallsign(values.at(10));
+        } else if (messageType == Report::ESSurfacePositionMessage) {
+            report.setAltitude(values.at(11).toInt());
+            report.setSpeed(values.at(12).toUShort());
+            report.setTrack(values.at(13).toUShort());
+            report.setCoordinates(values.at(14).toDouble(), values.at(15).toDouble());
+        } else if (messageType == Report::ESAirbornePositionMessage) {
+            report.setAltitude(values.at(11).toInt());
+            report.setCoordinates(values.at(14).toDouble(), values.at(15).toDouble());
+        } else if (messageType == Report::ESAirborneVelocityMessage) {
+            report.setSpeed(values.at(12).toUShort());
+            report.setTrack(values.at(13).toUShort());
+            report.setVerticalRate(values.at(16).toInt());
+        } else if (messageType == Report::SurveillanceAltMessage || messageType == Report::AirToAirMessage) {
+            report.setAltitude(values.at(11).toInt());
+        } else if (messageType == Report::SurveillanceIDMessage) {
+            report.setAltitude(values.at(11).toInt());
+            report.setSquawk(values.at(17).toUInt());
         }
-        aircraft.addPosition(position);
+        aircraft.addReport(report);
 
         aircrafts.insert(hexCode, aircraft);
     }

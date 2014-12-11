@@ -1,5 +1,5 @@
-#ifndef POSITION_H
-#define POSITION_H
+#ifndef REPORT_H
+#define REPORT_H
 
 #include "core_global.h"
 
@@ -9,15 +9,15 @@
 #include <QDateTime>
 #include <QSet>
 
-class PositionData;
+class ReportData;
 
-class CORESHARED_EXPORT Position : public QObject
+class CORESHARED_EXPORT Report : public QObject
 {
 public:
-    Position();
-    Position(const Position &);
-    Position &operator=(const Position &);
-    ~Position();
+    Report();
+    Report(const Report &);
+    Report &operator=(const Report &);
+    ~Report();
 
     enum MessageType {
         Unknown = 0,
@@ -52,13 +52,13 @@ public:
     void setSquawk(quint16 squawk);
     void setCallsign(QString callsign);
 
-    friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Position& position);
-    friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Position& position);
+    friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Report& position);
+    friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Report& position);
 private:
-    QExplicitlySharedDataPointer<PositionData> data;
+    QExplicitlySharedDataPointer<ReportData> data;
 };
 
-QDataStream& operator<<(QDataStream& stream, const Position::MessageType& messageType);
-QDataStream& operator>>(QDataStream& stream, Position::MessageType& messageType);
+QDataStream& operator<<(QDataStream& stream, const Report::MessageType& messageType);
+QDataStream& operator>>(QDataStream& stream, Report::MessageType& messageType);
 
-#endif // POSITION_H
+#endif // REPORT_H

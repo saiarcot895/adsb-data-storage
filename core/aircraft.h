@@ -7,7 +7,7 @@
 
 #include <QExplicitlySharedDataPointer>
 #include <QList>
-#include "position.h"
+#include "report.h"
 
 class AircraftData;
 
@@ -20,10 +20,10 @@ public:
     ~Aircraft();
 
     quint32 getHexCode() const;
-    QList<Position> getPositionData() const;
-    Position getPositionData(const QDateTime time) const;
+    QList<Report> getReports() const;
+    Report getReports(const QDateTime time) const;
 
-    void addPosition(const Position position);
+    void addReport(const Report report);
 
     friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft);
     friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft);

@@ -6,7 +6,7 @@
 #include <QMap>
 #include "aircraft.h"
 #include "aircraftmodel.h"
-#include "positionmodel.h"
+#include "reportmodel.h"
 
 class MainWindow : public QObject
 {
@@ -21,7 +21,7 @@ private:
     QObject* rootObject;
     QMap<quint32, Aircraft> aircrafts;
     AircraftModel* aircraftModel;
-    PositionModel* positionModel;
+    ReportModel* reportModel;
 
     void loadData();
 

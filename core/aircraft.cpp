@@ -6,7 +6,7 @@
 class AircraftData : public QSharedData {
 public:
     quint32 hexCode;
-    QMap<QDateTime, Position> positions;
+    QMap<QDateTime, Report> reports;
 };
 
 Aircraft::Aircraft(quint32 hexCode) : data(new AircraftData)
@@ -22,16 +22,16 @@ quint32 Aircraft::getHexCode() const {
     return data->hexCode;
 }
 
-QList<Position> Aircraft::getPositionData() const {
-    return data->positions.values();
+QList<Report> Aircraft::getReports() const {
+    return data->reports.values();
 }
 
-Position Aircraft::getPositionData(const QDateTime time) const {
-    return data->positions.value(time);
+Report Aircraft::getReports(const QDateTime time) const {
+    return data->reports.value(time);
 }
 
-void Aircraft::addPosition(const Position position) {
-    data->positions.insert(position.getReportingTime(), position);
+void Aircraft::addReport(const Report report) {
+    data->reports.insert(report.getReportingTime(), report);
 }
 
 Aircraft &Aircraft::operator=(const Aircraft &rhs)
@@ -43,7 +43,7 @@ Aircraft &Aircraft::operator=(const Aircraft &rhs)
 
 QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft) {
     stream << aircraft.data->hexCode;
-    stream << aircraft.data->positions.values();
+    stream << aircraft.data->reports.values();
 
     return stream;
 }
@@ -53,12 +53,12 @@ QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft) {
 
     stream >> aircraft.data->hexCode;
 
-    QList<Position> positions;
+    QList<Report> positions;
     stream >> positions;
 
     for (int i = 0; i < positions.size(); i++) {
-        const Position position = positions.at(i);
-        aircraft.data->positions.insert(position.getReportingTime(), position);
+        const Report position = positions.at(i);
+        aircraft.data->reports.insert(position.getReportingTime(), position);
     }
 
     return stream;

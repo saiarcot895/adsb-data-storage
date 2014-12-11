@@ -10,12 +10,12 @@ QMAKE_LFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 SOURCES += \
     aircraft.cpp \
-    position.cpp
+    report.cpp
 
 HEADERS += \
     aircraft.h \
-    position.h \
-    core_global.h
+    core_global.h \
+    report.h
 
 unix {
     target.path = /usr/lib

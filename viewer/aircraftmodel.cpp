@@ -23,7 +23,7 @@ QVariant AircraftModel::data(const QModelIndex &index, int role) const {
     if (role == AircraftModel::HexCode) {
         return aircraft.getHexCode();
     } else if (role == AircraftModel::PositionCount) {
-        return aircraft.getPositionData().size();
+        return aircraft.getReports().size();
     }
     return QVariant();
 }
@@ -51,7 +51,7 @@ bool AircraftModel::sortHexCodeAscending(Aircraft left, Aircraft right) {
 }
 
 bool AircraftModel::sortPositionCountAscending(Aircraft left, Aircraft right) {
-    return left.getPositionData().size() < right.getPositionData().size();
+    return left.getReports().size() < right.getReports().size();
 }
 
 bool AircraftModel::sortHexCodeDescending(Aircraft left, Aircraft right) {
@@ -59,5 +59,5 @@ bool AircraftModel::sortHexCodeDescending(Aircraft left, Aircraft right) {
 }
 
 bool AircraftModel::sortPositionCountDescending(Aircraft left, Aircraft right) {
-    return left.getPositionData().size() > right.getPositionData().size();
+    return left.getReports().size() > right.getReports().size();
 }

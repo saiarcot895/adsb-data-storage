@@ -1,15 +1,15 @@
-#ifndef POSITIONMODEL_H
-#define POSITIONMODEL_H
+#ifndef REPORTMODEL_H
+#define REPORTMODEL_H
 
 #include <QAbstractListModel>
 #include <QHash>
-#include "position.h"
+#include "report.h"
 
-class PositionModel : public QAbstractListModel
+class ReportModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit PositionModel(QList<Position> positions, QObject *parent = 0);
+    explicit ReportModel(QList<Report> reports, QObject *parent = 0);
 
     enum Roles {
         ReportingTime,
@@ -24,15 +24,15 @@ public:
         Callsign
     };
 
-    void setPositions(QList<Position> positions);
+    void setReports(QList<Report> reports);
 
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE QVariant data(int row, QString role) const;
 private:
-    QList<Position> positions;
+    QList<Report> reports;
 
 };
 
-#endif // POSITIONMODEL_H
+#endif // REPORTMODEL_H

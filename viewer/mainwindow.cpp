@@ -13,7 +13,7 @@ MainWindow::MainWindow(QObject *parent) :
 
     engine->rootContext()->setContextProperty("mainWindow", this);
     engine->rootContext()->setContextProperty("aircraftModel", aircraftModel);
-    engine->rootContext()->setContextProperty("positionModel", positionModel);
+    engine->rootContext()->setContextProperty("positionModel", reportModel);
     QQmlComponent component(engine, QUrl(QStringLiteral("qrc:///main.qml")));
     rootObject = component.create();
 }
@@ -28,10 +28,10 @@ void MainWindow::loadData() {
     }
 
     aircraftModel = new AircraftModel(aircrafts.values());
-    positionModel = new PositionModel(QList<Position>());
+    reportModel = new ReportModel(QList<Report>());
 }
 
 void MainWindow::displayAircraftHistory(int index) {
     Aircraft aircraft = aircrafts.values().at(index);
-    positionModel->setPositions(aircraft.getPositionData());
+    reportModel->setReports(aircraft.getReports());
 }
