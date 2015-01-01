@@ -24,10 +24,10 @@ public:
 private:
     QList<Aircraft> aircrafts;
 
-    static bool sortHexCodeAscending(Aircraft left, Aircraft right);
-    static bool sortPositionCountAscending(Aircraft left, Aircraft right);
-    static bool sortHexCodeDescending(Aircraft left, Aircraft right);
-    static bool sortPositionCountDescending(Aircraft left, Aircraft right);
+    static bool sortHexCodeAscending(const Aircraft left, const Aircraft right);
+    static bool sortPositionCountAscending(const Aircraft left, const Aircraft right);
+    static bool sortHexCodeDescending(const Aircraft left, const Aircraft right);
+    static bool sortPositionCountDescending(const Aircraft left, const Aircraft right);
 
 };
 

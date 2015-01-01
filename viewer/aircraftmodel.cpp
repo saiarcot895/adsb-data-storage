@@ -46,18 +46,18 @@ void AircraftModel::sort(int column, Qt::SortOrder order) {
     emit layoutChanged();
 }
 
-bool AircraftModel::sortHexCodeAscending(Aircraft left, Aircraft right) {
+bool AircraftModel::sortHexCodeAscending(const Aircraft left, const Aircraft right) {
     return left.getHexCode() < right.getHexCode();
 }
 
-bool AircraftModel::sortPositionCountAscending(Aircraft left, Aircraft right) {
+bool AircraftModel::sortPositionCountAscending(const Aircraft left, const Aircraft right) {
     return left.getReports().size() < right.getReports().size();
 }
 
-bool AircraftModel::sortHexCodeDescending(Aircraft left, Aircraft right) {
+bool AircraftModel::sortHexCodeDescending(const Aircraft left, const Aircraft right) {
     return left.getHexCode() > right.getHexCode();
 }
 
-bool AircraftModel::sortPositionCountDescending(Aircraft left, Aircraft right) {
+bool AircraftModel::sortPositionCountDescending(const Aircraft left, const Aircraft right) {
     return left.getReports().size() > right.getReports().size();
 }

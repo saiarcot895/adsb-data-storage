@@ -10,3 +10,6 @@ CONFIG += ordered
 SUBDIRS = core \
     listener \
     viewer
+
+listener.depends = core
+viewer.depends = core
