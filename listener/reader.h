@@ -12,7 +12,7 @@ class Reader : public QObject
 {
     Q_OBJECT
 public:
-    explicit Reader(QObject *parent = 0);
+    explicit Reader(QString host, quint16 port, int offset, QObject *parent = 0);
 
 private slots:
     void readData();

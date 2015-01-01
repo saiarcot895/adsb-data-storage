@@ -3,18 +3,18 @@
 #include <QFile>
 #include <QDataStream>
 
-Reader::Reader(QObject *parent) :
+Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
     QObject(parent),
     socket(new QTcpSocket(this)),
     timer(new QTimer(this))
 {
     loadData();
 
-    QObject::connect(timer, &QTimer::timeout, this, &Reader::saveData);
+    connect(timer, &QTimer::timeout, this, &Reader::saveData);
     timer->start(60000);
 
-    QObject::connect(socket, &QTcpSocket::readyRead, this, &Reader::readData);
-    socket->connectToHost("127.0.0.1", 30003, QIODevice::ReadOnly);
+    connect(socket, &QTcpSocket::readyRead, this, &Reader::readData);
+    socket->connectToHost(host, port, QIODevice::ReadOnly);
 }
 
 void Reader::loadData() {
