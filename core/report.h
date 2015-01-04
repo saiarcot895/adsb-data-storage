@@ -21,18 +21,19 @@ public:
 
     enum MessageType {
         Unknown = 0,
-        ESIdentificationAndCategory = 1,
-        ESSurfacePositionMessage,
-        ESAirbornePositionMessage,
-        ESAirborneVelocityMessage,
-        SurveillanceAltMessage,
-        SurveillanceIDMessage,
-        AirToAirMessage,
-        AllCallReply
+        ESIdentificationAndCategory = 1 << 1,
+        ESSurfacePositionMessage = 1 << 2,
+        ESAirbornePositionMessage = 1 << 3,
+        ESAirborneVelocityMessage = 1 << 4,
+        SurveillanceAltMessage = 1 << 5,
+        SurveillanceIDMessage = 1 << 6,
+        AirToAirMessage = 1 << 7,
+        AllCallReply = 1 << 8
     };
+    Q_DECLARE_FLAGS(MessageTypes, MessageType)
 
     QDateTime getReportingTime() const;
-    QSet<MessageType> getMessageTypes() const;
+    MessageTypes getMessageTypes() const;
     qreal getLatitude() const;
     qreal getLongitude() const;
     qint32 getAltitude() const;
@@ -60,5 +61,7 @@ private:
 
 QDataStream& operator<<(QDataStream& stream, const Report::MessageType& messageType);
 QDataStream& operator>>(QDataStream& stream, Report::MessageType& messageType);
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Report::MessageTypes)
 
 #endif // REPORT_H

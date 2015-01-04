@@ -5,7 +5,7 @@
 class ReportData : public QSharedData {
 public:
     QDateTime reportingTime;
-    QSet<Report::MessageType> messageTypes;
+    Report::MessageTypes messageTypes;
     qreal latitude = 0;
     qreal longitude = 0;
     qint32 altitude = 0;
@@ -28,7 +28,7 @@ QDateTime Report::getReportingTime() const {
     return data->reportingTime;
 }
 
-QSet<Report::MessageType> Report::getMessageTypes() const {
+Report::MessageTypes Report::getMessageTypes() const {
     return data->messageTypes;
 }
 
@@ -69,7 +69,7 @@ void Report::setReportingTime(QDateTime reportingTime) {
 }
 
 void Report::addMessageType(MessageType messageType) {
-    data->messageTypes.insert(messageType);
+    data->messageTypes |= messageType;
 }
 
 void Report::setCoordinates(qreal latitude, qreal longitude) {
@@ -112,30 +112,27 @@ QDataStream& operator<<(QDataStream& stream, const Report& position) {
     stream << position.data->reportingTime;
     stream << position.data->messageTypes;
 
-    if (position.data->messageTypes.contains(Report::ESIdentificationAndCategory)) {
+    if (position.data->messageTypes & Report::ESIdentificationAndCategory) {
         stream << position.data->callsign;
     }
-    if (position.data->messageTypes.contains(Report::SurveillanceAltMessage)
-            || position.data->messageTypes.contains(Report::AirToAirMessage)
-            || position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirbornePositionMessage)
-            || position.data->messageTypes.contains(Report::SurveillanceIDMessage)) {
+    if (position.data->messageTypes & (Report::SurveillanceAltMessage
+                                       | Report::AirToAirMessage | Report::ESSurfacePositionMessage
+                                       | Report::ESAirbornePositionMessage
+                                       | Report::SurveillanceIDMessage)) {
         stream << position.data->altitude;
     }
-    if (position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirborneVelocityMessage)) {
+    if (position.data->messageTypes & (Report::ESSurfacePositionMessage | Report::ESAirborneVelocityMessage)) {
         stream << position.data->speed;
         stream << position.data->track;
     }
-    if (position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirbornePositionMessage)) {
+    if (position.data->messageTypes & (Report::ESSurfacePositionMessage | Report::ESAirbornePositionMessage)) {
         stream << position.data->latitude;
         stream << position.data->longitude;
     }
-    if (position.data->messageTypes.contains(Report::ESAirborneVelocityMessage)) {
+    if (position.data->messageTypes & Report::ESAirborneVelocityMessage) {
         stream << position.data->verticalRate;
     }
-    if (position.data->messageTypes.contains(Report::SurveillanceIDMessage)) {
+    if (position.data->messageTypes & Report::SurveillanceIDMessage) {
         stream << position.data->squawk;
     }
 
@@ -145,33 +142,57 @@ QDataStream& operator<<(QDataStream& stream, const Report& position) {
 QDataStream& operator>>(QDataStream& stream, Report& position) {
     position = Report();
 
-    stream >> position.data->reportingTime;
-    stream >> position.data->messageTypes;
+    int messageTypeFlags;
 
-    if (position.data->messageTypes.contains(Report::ESIdentificationAndCategory)) {
+    stream >> position.data->reportingTime;
+    stream >> messageTypeFlags;
+
+    if (messageTypeFlags & Report::ESIdentificationAndCategory) {
+        position.data->messageTypes |= Report::ESIdentificationAndCategory;
+    }
+    if (messageTypeFlags & Report::SurveillanceAltMessage) {
+        position.data->messageTypes |= Report::SurveillanceAltMessage;
+    }
+    if (messageTypeFlags & Report::SurveillanceAltMessage) {
+        position.data->messageTypes |= Report::SurveillanceAltMessage;
+    }
+    if (messageTypeFlags & Report::AirToAirMessage) {
+        position.data->messageTypes |= Report::AirToAirMessage;
+    }
+    if (messageTypeFlags & Report::ESSurfacePositionMessage) {
+        position.data->messageTypes |= Report::ESSurfacePositionMessage;
+    }
+    if (messageTypeFlags & Report::ESAirbornePositionMessage) {
+        position.data->messageTypes |= Report::ESAirbornePositionMessage;
+    }
+    if (messageTypeFlags & Report::ESAirborneVelocityMessage) {
+        position.data->messageTypes |= Report::ESAirborneVelocityMessage;
+    }
+    if (messageTypeFlags & Report::SurveillanceIDMessage) {
+        position.data->messageTypes |= Report::SurveillanceIDMessage;
+    }
+
+    if (position.data->messageTypes & Report::ESIdentificationAndCategory) {
         stream >> position.data->callsign;
     }
-    if (position.data->messageTypes.contains(Report::SurveillanceAltMessage)
-            || position.data->messageTypes.contains(Report::AirToAirMessage)
-            || position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirbornePositionMessage)
-            || position.data->messageTypes.contains(Report::SurveillanceIDMessage)) {
+    if (position.data->messageTypes & (Report::SurveillanceAltMessage
+                                       | Report::AirToAirMessage | Report::ESSurfacePositionMessage
+                                       | Report::ESAirbornePositionMessage
+                                       | Report::SurveillanceIDMessage)) {
         stream >> position.data->altitude;
     }
-    if (position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirborneVelocityMessage)) {
+    if (position.data->messageTypes & (Report::ESSurfacePositionMessage | Report::ESAirborneVelocityMessage)) {
         stream >> position.data->speed;
         stream >> position.data->track;
     }
-    if (position.data->messageTypes.contains(Report::ESSurfacePositionMessage)
-            || position.data->messageTypes.contains(Report::ESAirbornePositionMessage)) {
+    if (position.data->messageTypes & (Report::ESSurfacePositionMessage | Report::ESAirbornePositionMessage)) {
         stream >> position.data->latitude;
         stream >> position.data->longitude;
     }
-    if (position.data->messageTypes.contains(Report::ESAirborneVelocityMessage)) {
+    if (position.data->messageTypes & Report::ESAirborneVelocityMessage) {
         stream >> position.data->verticalRate;
     }
-    if (position.data->messageTypes.contains(Report::SurveillanceIDMessage)) {
+    if (position.data->messageTypes & Report::SurveillanceIDMessage) {
         stream >> position.data->squawk;
     }
 

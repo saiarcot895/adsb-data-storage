@@ -35,13 +35,19 @@ QVariant ReportModel::data(const QModelIndex &index, int role) const {
     if (role == ReportModel::ReportingTime) {
         return report.getReportingTime();
     } else if (role == ReportModel::MessageType) {
-        QList<Report::MessageType> messageTypes = report.getMessageTypes().toList();
+        Report::MessageTypes messageTypes = report.getMessageTypes();
         QString messageTypeString;
-        for (int i = 0; i < messageTypes.size(); i++) {
-            messageTypeString += QString::number(messageTypes.at(i));
-            if (i != messageTypes.size() - 1) {
-                messageTypeString += ", ";
-            }
+        if (messageTypes & Report::ESIdentificationAndCategory) {
+            messageTypeString += QStringLiteral("ID and Category, ");
+        }
+        if (messageTypes & Report::ESSurfacePositionMessage) {
+            messageTypeString += QStringLiteral("Surface Position, ");
+        }
+        if (messageTypes & Report::ESAirbornePositionMessage) {
+            messageTypeString += QStringLiteral("Airborne Position, ");
+        }
+        if (messageTypes & Report::ESAirborneVelocityMessage) {
+            messageTypeString += QStringLiteral("Airborne Velocity, ");
         }
         return messageTypeString;
     } else if (role == ReportModel::Latitude) {
