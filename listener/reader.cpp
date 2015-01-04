@@ -6,7 +6,9 @@
 Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
     QObject(parent),
     socket(new QTcpSocket(this)),
-    timer(new QTimer(this))
+    timer(new QTimer(this)),
+    currentDate(QDate()),
+    offset(offset)
 {
     loadData();
 
@@ -18,7 +20,10 @@ Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
 }
 
 void Reader::loadData() {
-    QFile file("adsbData.dat");
+    if (!currentDate.isValid()) {
+        currentDate = QDate::currentDate();
+    }
+    QFile file(QString("adsbData.%1.dat").arg(currentDate.toString(Qt::ISODate)));
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
         QDataStream stream(&file);
@@ -32,7 +37,7 @@ void Reader::readData() {
         QString message = socket->readLine();
         const QStringList values = message.split(QChar(','));
 
-        Report::MessageType messageType = static_cast<Report::MessageType>(values.at(1).toInt());
+        Report::MessageType messageType = static_cast<Report::MessageType>(1 << values.at(1).toInt());
         quint32 hexCode = values.at(4).toInt(NULL, 16);
         if (!hexCode) {
             continue;
@@ -43,7 +48,14 @@ void Reader::readData() {
         time = time.remove(8, 4);
         QDateTime reportingTime = QDateTime::fromString(date + " " + time,
                                                         QStringLiteral("yyyy/MM/dd HH:mm:ss"));
-        reportingTime.toTimeSpec(Qt::LocalTime);
+        reportingTime = reportingTime.addMSecs(-offset * 3600 * 1000);
+        reportingTime.toTimeSpec(Qt::UTC);
+
+        if (!currentDate.isValid() || reportingTime.date() != currentDate) {
+            saveData();
+            aircrafts.clear();
+            currentDate = reportingTime.date();
+        }
 
         Aircraft aircraft = aircrafts.value(hexCode, Aircraft(hexCode));
         Report report = aircraft.getReports(reportingTime);
@@ -77,9 +89,13 @@ void Reader::readData() {
 }
 
 void Reader::saveData() {
-    QFile file("adsbData.dat");
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
-    QDataStream stream(&file);
-    stream << aircrafts;
-    file.close();
+    if (!currentDate.isValid()) {
+        return;
+    }
+    QFile file(QString("adsbData.%1.dat").arg(currentDate.toString(Qt::ISODate)));
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QDataStream stream(&file);
+        stream << aircrafts;
+        file.close();
+    }
 }

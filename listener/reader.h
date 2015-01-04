@@ -21,6 +21,8 @@ private:
     QTcpSocket* socket;
     QMap<quint32, Aircraft> aircrafts;
     QTimer* timer;
+    QDate currentDate;
+    int offset;
 
     void loadData();
 
