@@ -17,11 +17,15 @@ public:
 private slots:
     void readData();
     void saveData();
+    void reconnect();
+    void doReconnection();
 private:
     QTcpSocket* socket;
     QMap<quint32, Aircraft> aircrafts;
     QTimer* timer;
     QDate currentDate;
+    QString host;
+    quint16 port;
     int offset;
 
     void loadData();

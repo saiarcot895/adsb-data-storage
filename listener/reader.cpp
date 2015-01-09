@@ -8,6 +8,8 @@ Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
     socket(new QTcpSocket(this)),
     timer(new QTimer(this)),
     currentDate(QDate()),
+    host(host),
+    port(port),
     offset(offset)
 {
     loadData();
@@ -16,6 +18,8 @@ Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
     timer->start(60000);
 
     connect(socket, &QTcpSocket::readyRead, this, &Reader::readData);
+    connect(socket, &QTcpSocket::disconnected, this, &Reader::reconnect);
+    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(reconnect()));
     socket->connectToHost(host, port, QIODevice::ReadOnly);
 }
 
@@ -98,4 +102,12 @@ void Reader::saveData() {
         stream << aircrafts;
         file.close();
     }
+}
+
+void Reader::reconnect() {
+    QTimer::singleShot(10000, Qt::CoarseTimer, this, SLOT(doReconnection()));
+}
+
+void Reader::doReconnection() {
+    socket->connectToHost(host, port, QIODevice::ReadOnly);
 }

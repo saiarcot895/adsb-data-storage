@@ -32,9 +32,9 @@ int main(int argc, char *argv[])
     parser.process(a);
 
     QString host = parser.value(hostOption);
-    bool* validPort;
-    quint16 port = parser.value(portOption).toUShort(validPort);
-    if (!*validPort || !port) {
+    bool validPort = false;
+    quint16 port = parser.value(portOption).toUShort(&validPort);
+    if (!validPort || !port) {
         return 2;
     }
     int offset = parser.value(offsetOption).toInt();
