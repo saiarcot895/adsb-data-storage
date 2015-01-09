@@ -41,6 +41,21 @@ Aircraft &Aircraft::operator=(const Aircraft &rhs)
     return *this;
 }
 
+Aircraft operator+(const Aircraft& aircraft1, const Aircraft& aircraft2) {
+    if (aircraft1.data->hexCode == aircraft2.data->hexCode) {
+        Aircraft aircraft3(aircraft1.data->hexCode);
+        aircraft3.data->reports.unite(aircraft1.data->reports);
+        aircraft3.data->reports.unite(aircraft2.data->reports);
+        return aircraft3;
+    } else {
+        return aircraft1;
+    }
+}
+
+Aircraft operator+=(const Aircraft& aircraft1, const Aircraft& aircraft2) {
+    return aircraft1 + aircraft2;
+}
+
 QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft) {
     stream << aircraft.data->hexCode;
     stream << aircraft.data->reports.values();

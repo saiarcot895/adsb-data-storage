@@ -25,6 +25,9 @@ public:
 
     void addReport(const Report report);
 
+    friend CORESHARED_EXPORT Aircraft operator+(const Aircraft& aircraft1, const Aircraft& aircraft2);
+    friend CORESHARED_EXPORT Aircraft operator+=(const Aircraft& aircraft1, const Aircraft& aircraft2);
+
     friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft);
     friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft);
 private:
