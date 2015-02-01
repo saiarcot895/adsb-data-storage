@@ -35,9 +35,10 @@ int main(int argc, char *argv[])
     bool validPort = false;
     quint16 port = parser.value(portOption).toUShort(&validPort);
     if (!validPort || !port) {
+        qCritical() << "Invalid port given";
         return 2;
     }
-    int offset = parser.value(offsetOption).toInt();
+    double offset = parser.value(offsetOption).toDouble();
 
     Reader reader(host, port, offset);
 

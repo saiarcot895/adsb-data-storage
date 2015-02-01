@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QDataStream>
 
-Reader::Reader(QString host, quint16 port, int offset, QObject *parent) :
+Reader::Reader(QString host, quint16 port, double offset, QObject *parent) :
     QObject(parent),
     socket(new QTcpSocket(this)),
     timer(new QTimer(this)),

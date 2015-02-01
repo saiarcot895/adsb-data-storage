@@ -12,7 +12,7 @@ class Reader : public QObject
 {
     Q_OBJECT
 public:
-    explicit Reader(QString host, quint16 port, int offset, QObject *parent = 0);
+    explicit Reader(QString host, quint16 port, double offset, QObject *parent = 0);
 
 private slots:
     void readData();
@@ -26,7 +26,7 @@ private:
     QDate currentDate;
     QString host;
     quint16 port;
-    int offset;
+    double offset;
 
     void loadData();
 
