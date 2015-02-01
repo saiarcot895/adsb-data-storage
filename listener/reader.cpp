@@ -57,7 +57,7 @@ void Reader::readData() {
         QDateTime reportingTime = QDateTime::fromString(date + " " + time,
                                                         QStringLiteral("yyyy/MM/dd HH:mm:ss"));
         reportingTime = reportingTime.addMSecs(-offset * 3600 * 1000);
-        reportingTime.toTimeSpec(Qt::UTC);
+        reportingTime.setTimeSpec(Qt::UTC);
 
         if (!currentDate.isValid() || reportingTime.date() != currentDate) {
             saveData();
