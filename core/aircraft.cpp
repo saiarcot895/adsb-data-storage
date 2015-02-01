@@ -71,8 +71,7 @@ QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft) {
     QList<Report> positions;
     stream >> positions;
 
-    for (int i = 0; i < positions.size(); i++) {
-        const Report position = positions.at(i);
+    foreach (Report position, positions) {
         aircraft.data->reports.insert(position.getReportingTime(), position);
     }
 
