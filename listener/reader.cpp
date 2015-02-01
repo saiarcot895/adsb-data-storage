@@ -40,6 +40,10 @@ void Reader::readData() {
     while (socket->canReadLine()) {
         QString message = socket->readLine();
         const QStringList values = message.split(QChar(','));
+        if (values.length() < 18) {
+            qWarning() << "Invalid message:" << message;
+            continue;
+        }
 
         Report::MessageType messageType = static_cast<Report::MessageType>(1 << values.at(1).toInt());
         quint32 hexCode = values.at(4).toInt(NULL, 16);
