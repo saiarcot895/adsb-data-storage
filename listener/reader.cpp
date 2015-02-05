@@ -39,6 +39,10 @@ void Reader::loadData() {
 void Reader::readData() {
     while (socket->canReadLine()) {
         QString message = socket->readLine();
+        if (message == QStringLiteral("\r\n")) {
+            return;
+        }
+
         const QStringList values = message.split(QChar(','));
         if (values.length() < 18) {
             qWarning() << "Invalid message:" << message;
