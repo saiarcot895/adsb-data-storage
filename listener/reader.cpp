@@ -113,9 +113,13 @@ void Reader::saveData() {
 }
 
 void Reader::reconnect() {
-    QTimer::singleShot(10000, Qt::CoarseTimer, this, SLOT(doReconnection()));
+    if (socket->state() != QAbstractSocket::ConnectedState) {
+        QTimer::singleShot(10000, Qt::CoarseTimer, this, SLOT(doReconnection()));
+    }
 }
 
 void Reader::doReconnection() {
-    socket->connectToHost(host, port, QIODevice::ReadOnly);
+    if (socket->state() != QAbstractSocket::ConnectedState) {
+        socket->connectToHost(host, port, QIODevice::ReadOnly);
+    }
 }
