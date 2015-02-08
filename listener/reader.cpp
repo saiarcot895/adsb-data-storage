@@ -65,6 +65,10 @@ void Reader::readData() {
         if (!hexCode) {
             continue;
         }
+        if (hexCode >= 0x1000000) {
+            qWarning() << "Invalid hex code:" << QString::number(hexCode, 16).toUpper();
+            continue;
+        }
 
         QString date = values.at(6);
         QString time = values.at(7);
