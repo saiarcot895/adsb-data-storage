@@ -126,7 +126,6 @@ void Reader::saveData() {
         quint32 magicBytes = MAGIC_BYTES;
         stream << magicBytes;
         stream << static_cast<quint16>(Aircraft::getDataVersion());
-        stream << Aircraft::Adsb_Data_Default;
         stream << aircrafts;
         file.close();
     }
