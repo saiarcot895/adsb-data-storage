@@ -61,7 +61,7 @@ QVariant ReportModel::data(const QModelIndex &index, int role) const {
         if (messageTypes & Report::AllCallReply) {
             messageTypeString += QStringLiteral("All Call Reply, ");
         }
-        messageTypeString.left(messageTypeString.length() - 2);
+        messageTypeString = messageTypeString.left(messageTypeString.length() - 2);
         return messageTypeString;
     } else if (role == ReportModel::Latitude) {
         return report.getLatitude();
@@ -69,6 +69,8 @@ QVariant ReportModel::data(const QModelIndex &index, int role) const {
         return report.getLongitude();
     } else if (role == ReportModel::Altitude) {
         return report.getAltitude();
+    } else if (role == ReportModel::Speed) {
+        return report.getSpeed();
     }
     return QVariant();
 }

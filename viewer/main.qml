@@ -83,6 +83,7 @@ ApplicationWindow {
             infoDisplay.latitude = model.data(currentRow, "latitude");
             infoDisplay.longitude = model.data(currentRow, "longitude");
             infoDisplay.altitude = model.data(currentRow, "altitude");
+            infoDisplay.speed = model.data(currentRow, "speed");
         }
     }
 
@@ -105,6 +106,7 @@ ApplicationWindow {
             property double latitude
             property double longitude
             property int altitude
+            property int speed
 
             Label {
                 id: reportingTimeLabel
@@ -155,7 +157,7 @@ ApplicationWindow {
                 id: latitudeDisplay
                 anchors.top: messageTypeDisplay.bottom
                 anchors.topMargin: 6
-                anchors.left: messageTypeLabel.right
+                anchors.left: latitudeLabel.right
                 anchors.leftMargin: 6
                 text: parent.latitude
             }
@@ -173,7 +175,7 @@ ApplicationWindow {
                 id: longitudeDisplay
                 anchors.top: latitudeDisplay.bottom
                 anchors.topMargin: 6
-                anchors.left: messageTypeLabel.right
+                anchors.left: longitudeLabel.right
                 anchors.leftMargin: 6
                 text: parent.longitude
             }
@@ -191,9 +193,27 @@ ApplicationWindow {
                 id: altitudeDisplay
                 anchors.top: longitudeDisplay.bottom
                 anchors.topMargin: 6
-                anchors.left: messageTypeLabel.right
+                anchors.left: altitudeLabel.right
                 anchors.leftMargin: 6
                 text: parent.altitude
+            }
+
+            Label {
+                id: speedLabel
+                anchors.top: altitudeDisplay.bottom
+                anchors.topMargin: 6
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                text: "Speed: "
+            }
+
+            Label {
+                id: speedDisplay
+                anchors.top: altitudeDisplay.bottom
+                anchors.topMargin: 6
+                anchors.left: speedLabel.right
+                anchors.leftMargin: 6
+                text: parent.speed
             }
         }
     }
