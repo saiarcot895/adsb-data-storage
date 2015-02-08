@@ -34,6 +34,17 @@ void MainWindow::loadData() {
         QFile file(directory.absolutePath() + "/" + files.at(i));
         file.open(QIODevice::ReadOnly);
         QDataStream stream(&file);
+        stream.setVersion(QDataStream::Qt_5_0);
+        quint32 magicBytes;
+        stream >> magicBytes;
+        if (magicBytes != MAGIC_BYTES) {
+            //qCritical() << "Invalid file header for" << files.at(i);
+            file.close();
+            continue;
+        }
+        quint16 dataVersionInt;
+        stream >> dataVersionInt;
+        Aircraft::setDataVersion(static_cast<Aircraft::Version>(dataVersionInt));
         stream >> localAircrafts;
         file.close();
 

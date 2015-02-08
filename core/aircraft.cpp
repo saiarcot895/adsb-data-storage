@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QMap>
 
+Aircraft::Version Aircraft::dataVersion = Aircraft::Adsb_Data_Default;
+
 class AircraftData : public QSharedData {
 public:
     quint32 hexCode;
@@ -32,6 +34,14 @@ Report Aircraft::getReports(const QDateTime time) const {
 
 void Aircraft::addReport(const Report report) {
     data->reports.insert(report.getReportingTime(), report);
+}
+
+Aircraft::Version Aircraft::getDataVersion() {
+    return Aircraft::dataVersion;
+}
+
+void Aircraft::setDataVersion(Version dataVersion) {
+    Aircraft::dataVersion = dataVersion;
 }
 
 Aircraft &Aircraft::operator=(const Aircraft &rhs)

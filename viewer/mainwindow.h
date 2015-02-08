@@ -8,6 +8,8 @@
 #include "aircraftmodel.h"
 #include "reportmodel.h"
 
+#define MAGIC_BYTES 0xAD8BDA7A
+
 class MainWindow : public QObject
 {
     Q_OBJECT

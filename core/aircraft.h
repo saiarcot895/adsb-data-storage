@@ -19,11 +19,20 @@ public:
     Aircraft &operator=(const Aircraft &);
     ~Aircraft();
 
+    enum Version {
+        Adsb_Data_1_0 = 1,
+
+        Adsb_Data_Default = Adsb_Data_1_0
+    };
+
     quint32 getHexCode() const;
     QList<Report> getReports() const;
     Report getReports(const QDateTime time) const;
 
     void addReport(const Report report);
+
+    static Version getDataVersion();
+    static void setDataVersion(Version dataVersion);
 
     friend CORESHARED_EXPORT Aircraft operator+(const Aircraft& aircraft1, const Aircraft& aircraft2);
     friend CORESHARED_EXPORT Aircraft operator+=(const Aircraft& aircraft1, const Aircraft& aircraft2);
@@ -31,6 +40,7 @@ public:
     friend CORESHARED_EXPORT QDataStream& operator<<(QDataStream& stream, const Aircraft& aircraft);
     friend CORESHARED_EXPORT QDataStream& operator>>(QDataStream& stream, Aircraft& aircraft);
 private:
+    static Version dataVersion;
     QExplicitlySharedDataPointer<AircraftData> data;
 };
 

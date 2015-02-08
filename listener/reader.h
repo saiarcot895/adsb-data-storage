@@ -8,6 +8,8 @@
 #include <QMap>
 #include <QTimer>
 
+#define MAGIC_BYTES 0xAD8BDA7A
+
 class Reader : public QObject
 {
     Q_OBJECT

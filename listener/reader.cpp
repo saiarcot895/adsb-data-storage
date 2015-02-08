@@ -31,6 +31,17 @@ void Reader::loadData() {
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
         QDataStream stream(&file);
+        stream.setVersion(QDataStream::Qt_5_0);
+        quint32 magicBytes;
+        stream >> magicBytes;
+        if (magicBytes != MAGIC_BYTES) {
+            qCritical() << "Invalid file header.";
+            file.close();
+            return;
+        }
+        quint16 dataVersionInt;
+        stream >> dataVersionInt;
+        Aircraft::setDataVersion(static_cast<Aircraft::Version>(dataVersionInt));
         stream >> aircrafts;
         file.close();
     }
@@ -107,6 +118,11 @@ void Reader::saveData() {
     QFile file(QString("adsbData.%1.dat").arg(currentDate.toString(Qt::ISODate)));
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         QDataStream stream(&file);
+        stream.setVersion(QDataStream::Qt_5_0);
+        quint32 magicBytes = MAGIC_BYTES;
+        stream << magicBytes;
+        stream << static_cast<quint16>(Aircraft::getDataVersion());
+        stream << Aircraft::Adsb_Data_Default;
         stream << aircrafts;
         file.close();
     }
