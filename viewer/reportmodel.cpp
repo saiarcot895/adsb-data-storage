@@ -33,7 +33,7 @@ int ReportModel::rowCount(const QModelIndex &parent) const {
 QVariant ReportModel::data(const QModelIndex &index, int role) const {
     const Report report = reports.at(index.row());
     if (role == ReportModel::ReportingTime) {
-        return report.getReportingTime();
+        return report.getReportingTime().toString(Qt::DefaultLocaleShortDate);
     } else if (role == ReportModel::MessageType) {
         Report::MessageTypes messageTypes = report.getMessageTypes();
         QString messageTypeString;
@@ -49,6 +49,19 @@ QVariant ReportModel::data(const QModelIndex &index, int role) const {
         if (messageTypes & Report::ESAirborneVelocityMessage) {
             messageTypeString += QStringLiteral("Airborne Velocity, ");
         }
+        if (messageTypes & Report::SurveillanceAltMessage) {
+            messageTypeString += QStringLiteral("Surveillance Altitude Message, ");
+        }
+        if (messageTypes & Report::SurveillanceIDMessage) {
+            messageTypeString += QStringLiteral("Surveillance ID Message, ");
+        }
+        if (messageTypes & Report::AirToAirMessage) {
+            messageTypeString += QStringLiteral("Air to Air Message, ");
+        }
+        if (messageTypes & Report::AllCallReply) {
+            messageTypeString += QStringLiteral("All Call Reply, ");
+        }
+        messageTypeString.left(messageTypeString.length() - 2);
         return messageTypeString;
     } else if (role == ReportModel::Latitude) {
         return report.getLatitude();

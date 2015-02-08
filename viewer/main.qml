@@ -100,7 +100,7 @@ ApplicationWindow {
             id: infoDisplay
             anchors.fill: parent
 
-            property date reportingTime
+            property string reportingTime
             property string messageType
             property double latitude
             property double longitude
